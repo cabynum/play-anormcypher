@@ -1,7 +1,31 @@
-@(message: String)
+@(contacts: List[Contact])
 
-@main("Welcome to Play 2.0") {
+<!--
+  This import statement gives us the form creation helpers (like the "form" and "inputText" functions 
+  that we'll need.
+-->
+@import helper._
+
+@main("Contacts list") {
     
-    @play20.welcome(message)
-    
+    <h1>@contacts.size Contact(s) in node graph...</h1>
+
+    <table>
+    	<tr>
+    		<th>Name</th>
+    		<th>Title</th>
+    		<th>Location</th>
+    	</tr>
+        @contacts.map { contact =>
+        	<tr>
+        		<td>@contact.fname &nbsp; @contact.lname</td>
+        		<td>@contact.title</td>
+        		<td>@contact.location</td>
+        		<td>@form(routes.Application.deleteContact(contact.id)) {
+        				<input type="submit" value="Delete">
+        			}
+        		</td>
+        	</tr>
+        }
+    </table>   
 }
