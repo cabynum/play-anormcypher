@@ -1,4 +1,4 @@
-@(contacts: List[Contact])
+@(contacts: List[Contact], contactsForm: Form[Contact])
 
 <!--
   This import statement gives us the form creation helpers (like the "form" and "inputText" functions 
@@ -6,26 +6,42 @@
 -->
 @import helper._
 
-@main("Contacts list") {
+@main("Contacts List") {
     
     <h1>@contacts.size Contact(s) in node graph...</h1>
 
     <table>
     	<tr>
     		<th>Name</th>
+    		<th>E-Mail</th>
     		<th>Title</th>
     		<th>Location</th>
     	</tr>
         @contacts.map { contact =>
         	<tr>
         		<td>@contact.fname &nbsp; @contact.lname</td>
+        		<td>@contact.email</td>
         		<td>@contact.title</td>
         		<td>@contact.location</td>
-        		<td>@form(routes.Application.deleteContact(contact.id)) {
+        		<td>@form(routes.Application.deleteContact(contact.email)) {
         				<input type="submit" value="Delete">
         			}
         		</td>
         	</tr>
         }
-    </table>   
+    </table>
+
+    <h2>Add a new contact</h2>
+    
+    @form(routes.Application.newContact) {
+        
+        @inputText(contactsForm("fname"), '_label -> "First Name")
+        @inputText(contactsForm("lname"), '_label -> "Last Name")
+        @inputText(contactsForm("email"), '_label -> "E-Mail")
+        @inputText(contactsForm("title"), '_label -> "Title")
+        @inputText(contactsForm("location"), '_label -> "Location")
+        
+        <input type="submit" value="Create">
+        
+    }  
 }
