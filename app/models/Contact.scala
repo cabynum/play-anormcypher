@@ -1,7 +1,6 @@
 package models
 
 import org.anormcypher._
-import scala.collection.mutable.ListBuffer
 import play.Logger
 
 case class Contact(fname:String, lname:String, email:String, title:String, location:String)
@@ -9,8 +8,14 @@ case class Contact(fname:String, lname:String, email:String, title:String, locat
 object Contact {
 
 	def all(): List[Contact] = {
-		var contacts = new ListBuffer[Contact]
-		contacts.toList
+
+		Logger.info("Retrieving all Nodes...")
+
+		val allContacts = Cypher("start n=node(*) where has(n.email) return n.firstName as fname, n.lastName as lname, n.email as email, n.title as title, n.location as location")().collect{
+			case CypherRow(fname:String, lname:String, email:String, title:String, location:String) => Contact(fname,lname,email,title,location)
+			}
+
+		allContacts.toList
 	}
 
 	def create(fname:String, lname:String, email:String, title:String, location:String) {
